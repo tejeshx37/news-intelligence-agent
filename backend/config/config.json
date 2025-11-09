@@ -1,0 +1,12 @@
+{
+    "news_api_key": "YOUR_NEWS_API_KEY",
+    "open_router_api_key": "YOUR_OPEN_ROUTER_API_KEY",
+    "aws_access_key_id": "YOUR_AWS_ACCESS_KEY_ID",
+    "aws_secret_access_key": "YOUR_AWS_SECRET_ACCESS_KEY",
+    "aws_region": "us-east-1",
+    "s3_bucket": "news-intelligence-data",
+    "sentiment_model_path": "models/sentiment_model.pkl",
+    "fake_news_model_path": "models/fake_news_model.pkl",
+    "vectorizer_path": "models/vectorizer.pkl",
+    "fake_vectorizer_path": "models/fake_vectorizer.pkl"
+}
