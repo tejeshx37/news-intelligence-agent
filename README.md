@@ -4,10 +4,12 @@ An AI-powered news analysis and processing system that combines sentiment analys
 
 ## 🌟 Features
 
+- **Galaxy Chatbot UI**: Beautiful React-based chatbot interface with galaxy theme
 - **Sentiment Analysis**: Advanced sentiment classification for news articles
 - **Fake News Detection**: ML-powered detection of potentially fake or misleading news
 - **AI Summarization**: Intelligent article summarization using free AI models
 - **News Fetching**: Automated news retrieval from multiple sources
+- **Trend Analysis**: Enhanced keyword detection for trend analysis queries
 - **AWS Integration**: Scalable cloud deployment with Lambda and S3
 - **API Integration**: Support for News API, OpenRouter, and other services
 - **Batch Processing**: Efficient processing of multiple articles
@@ -25,8 +27,13 @@ An AI-powered news analysis and processing system that combines sentiment analys
          └───────────────────────┼───────────────────────┘
                                  │
                     ┌─────────────────────┐
-                    │   Lambda Handler     │
-                    │   (Main Entry Point) │
+                    │   Frontend (React)   │
+                    │   Galaxy Chatbot     │
+                    └─────────────────────┘
+                                 │
+                    ┌─────────────────────┐
+                    │   Backend (Flask)    │
+                    │   API Endpoints      │
                     └─────────────────────┘
                                  │
          ┌───────────────────────┼───────────────────────┐
@@ -49,41 +56,41 @@ An AI-powered news analysis and processing system that combines sentiment analys
 ```
 news-intelligence-agent/
 │
+├── frontend/                          # React Galaxy Chatbot UI
+│   ├── src/
+│   │   ├── App.js                    # Main chatbot application
+│   │   ├── components/               # UI components
+│   │   └── index.js                  # React entry point
+│   ├── public/                       # Static assets
+│   ├── package.json                  # Frontend dependencies
+│   └── build/                        # Production build
+│
+├── backend/                           # Flask API backend
+│   ├── app.py                        # Main Flask application
+│   ├── api/                          # API routes
+│   ├── services/                     # Business logic
+│   ├── models/                       # ML models
+│   ├── utils/                        # Utility functions
+│   └── requirements.txt             # Python dependencies
+│
 ├── model_training/                    # Model training scripts
 │   ├── train_sentiment.py            # Sentiment analysis training
 │   ├── train_fake_news_detector.py   # Fake news detection training
-│   ├── sentiment_model.pkl           # Trained sentiment model
-│   ├── vectorizer.pkl                # TF-IDF vectorizer
-│   ├── fake_news_model.pkl           # Trained fake news model
-│   ├── fake_vectorizer.pkl           # Fake news vectorizer
-│   └── __init__.py
+│   └── trained_models/               # Saved models
 │
 ├── lambda_function/                   # AWS Lambda functions
 │   ├── lambda_handler.py             # Main Lambda entry point
-│   ├── news_fetcher.py               # News API integration
-│   ├── sentiment_analyzer.py         # Sentiment analysis logic
-│   ├── fake_news_detector.py         # Fake news detection
-│   ├── summarizer.py                  # Article summarization
-│   ├── openrouter_client.py          # OpenRouter API client
-│   ├── news_pipeline.py              # Processing orchestrator
-│   ├── requirements.txt              # Lambda-specific dependencies
-│   └── __init__.py
+│   └── requirements.txt              # Lambda dependencies
 │
+├── cloudformation/                    # AWS CloudFormation templates
+├── data/                             # Data storage
 ├── s3_upload/                         # S3 upload utilities
-│   ├── upload_to_s3.py               # Model upload script
-│   └── __init__.py
-│
-├── utils/                            # Utility modules
-│   ├── aws_utils.py                  # S3 and AWS utilities
-│   ├── config.py                     # Configuration management
-│   ├── logger.py                     # Logging utilities
-│   └── __init__.py
-│
+├── utils/                            # Shared utilities
 ├── requirements.txt                  # Main dependencies
 ├── setup.py                          # Package installation
 ├── Dockerfile                        # Container configuration
 ├── docker-compose.yml                # Local development setup
-├── .env.example                      # Environment variables template
+├── DEPLOYMENT.md                     # Deployment guide
 └── README.md                         # This file
 ```
 
@@ -92,6 +99,7 @@ news-intelligence-agent/
 ### 1. Prerequisites
 
 - Python 3.8+
+- Node.js 16+
 - AWS Account (optional, for cloud deployment)
 - API Keys (free options available)
 
@@ -99,15 +107,19 @@ news-intelligence-agent/
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/news-intelligence-agent.git
+git clone https://github.com/tejeshx37/news-intelligence-agent.git
 cd news-intelligence-agent
 
-# Create virtual environment
+# Backend setup
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r backend/requirements.txt
 
-# Install dependencies
-pip install -r requirements.txt
+# Frontend setup
+cd frontend
+npm install
+npm run build
+cd ..
 
 # Install the package
 pip install -e .
@@ -134,7 +146,7 @@ nano .env
 - **OpenAI API**: For advanced AI features
 - **AWS Services**: For cloud deployment
 
-### 5. Train Models
+### 5. Train Models (Optional)
 
 ```bash
 # Train sentiment analysis model
@@ -144,22 +156,33 @@ python model_training/train_sentiment.py
 python model_training/train_fake_news_detector.py
 ```
 
-### 6. Upload Models to S3 (Optional)
+### 6. Run Locally
 
 ```bash
-# Upload trained models to S3
-python s3_upload/upload_to_s3.py --bucket your-s3-bucket
-```
-
-### 7. Run Locally
-
-```bash
-# Run with Docker Compose
+# Run with Docker Compose (recommended)
 docker-compose up
 
-# Or run directly
-python -m lambda_function.lambda_handler
+# Or run backend directly
+cd backend && python app.py
+
+# Or run frontend development server
+cd frontend && npm start
 ```
+
+## 🎯 Usage Examples
+
+### Trend Analysis
+Ask the chatbot about:
+- "AI trends of last ten years"
+- "Recent developments in technology"
+- "Show me news about artificial intelligence"
+- "Analyze trends in renewable energy"
+
+### Article Processing
+- Paste article text for analysis
+- Get sentiment analysis and fake news detection
+- Receive AI-powered summaries
+- View confidence scores and detailed insights
 
 ## 🔧 Configuration
 
@@ -174,126 +197,44 @@ python -m lambda_function.lambda_handler
 | `LOG_LEVEL` | Logging level | `INFO` |
 | `MAX_ARTICLES_PER_REQUEST` | Max articles per API call | `100` |
 
-### Feature Flags
-
-| Flag | Description | Default |
-|------|-------------|---------|
-| `ENABLE_SENTIMENT_ANALYSIS` | Enable sentiment analysis | `true` |
-| `ENABLE_FAKE_NEWS_DETECTION` | Enable fake news detection | `true` |
-| `ENABLE_SUMMARIZATION` | Enable AI summarization | `true` |
-| `ENABLE_AI_ANALYSIS` | Enable advanced AI analysis | `true` |
-| `ENABLE_CACHING` | Enable response caching | `true` |
-
-## 📡 API Usage
-
-### Local Development
-
-```python
-from lambda_function.news_pipeline import NewsProcessingPipeline
-
-# Initialize pipeline
-pipeline = NewsProcessingPipeline()
-
-# Process single article
-result = pipeline.process_article(
-    title="Example News Title",
-    content="Full article content here...",
-    source="news-source.com"
-)
-
-print(result)
-```
-
-### AWS Lambda Deployment
-
-```bash
-# Package Lambda function
-cd lambda_function
-zip -r ../news-intelligence-lambda.zip .
-
-# Deploy to AWS Lambda
-aws lambda create-function \
-  --function-name news-intelligence \
-  --runtime python3.9 \
-  --role arn:aws:iam::YOUR_ACCOUNT:role/lambda-role \
-  --handler lambda_handler.handler \
-  --zip-file fileb://news-intelligence-lambda.zip
-```
-
 ### API Endpoints
 
 | Endpoint | Method | Description |
 |----------|--------|-------------|
-| `/process` | POST | Process single article |
-| `/process-batch` | POST | Process multiple articles |
-| `/fetch-and-process` | GET | Fetch and process news |
-| `/top-headlines` | GET | Process top headlines |
-| `/health` | GET | Health check |
+| `/api/process` | POST | Process single article |
+| `/api/fetch-and-process` | POST | Fetch and process news |
+| `/api/health` | GET | Health check |
 
 ## 🧪 Testing
 
 ```bash
-# Run unit tests
-pytest tests/ -v
+# Test backend
+cd backend && python -m pytest tests/ -v
 
-# Run with coverage
-pytest tests/ --cov=news_intelligence --cov-report=html
+# Test frontend
+cd frontend && npm test
 
-# Test specific component
-pytest tests/test_sentiment_analyzer.py -v
+# Test API endpoints
+curl -X POST http://localhost:8000/api/process \
+  -H "Content-Type: application/json" \
+  -d '{"title": "Test Article", "content": "Test content", "include_analysis": true}'
 ```
 
 ## 🏭 Production Deployment
 
 ### AWS Deployment
-
-1. **Set up AWS resources**:
-   ```bash
-   # Create S3 bucket
-   aws s3 mb s3://your-news-intelligence-bucket
-   
-   # Create Lambda function
-   aws lambda create-function --function-name news-intelligence ...
-   
-   # Set up API Gateway
-   aws apigateway create-rest-api --name news-intelligence-api
-   ```
-
-2. **Deploy with SAM**:
-   ```bash
-   # Package application
-   sam package --template-file template.yaml --s3-bucket your-deployment-bucket
-   
-   # Deploy
-   sam deploy --guided
-   ```
+See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment instructions.
 
 ### Docker Deployment
 
 ```bash
-# Build image
+# Build and run with Docker
 docker build -t news-intelligence .
-
-# Run container
 docker run -p 8000:8000 --env-file .env news-intelligence
 
-# Docker Compose (with all services)
+# Or use Docker Compose
 docker-compose up -d
 ```
-
-## 🔍 Model Information
-
-### Sentiment Analysis
-- **Algorithm**: Logistic Regression with TF-IDF
-- **Accuracy**: ~85% on test data
-- **Classes**: Positive, Negative, Neutral
-- **Features**: Text preprocessing, stopword removal, n-grams
-
-### Fake News Detection
-- **Algorithm**: Random Forest Classifier
-- **Accuracy**: ~92% on test data
-- **Features**: Text length, punctuation, caps ratio, word count, source credibility
-- **Training Data**: Combination of reliable and unreliable news sources
 
 ## 📊 Performance Metrics
 
@@ -313,43 +254,44 @@ docker-compose up -d
 - **Data Encryption**: S3 encryption for model storage
 - **Logging**: Sanitized logging to prevent data leakage
 
+## 🔍 Model Information
+
+### Sentiment Analysis
+- **Algorithm**: Logistic Regression with TF-IDF
+- **Accuracy**: ~85% on test data
+- **Classes**: Positive, Negative, Neutral
+- **Features**: Text preprocessing, stopword removal, n-grams
+
+### Fake News Detection
+- **Algorithm**: Random Forest Classifier
+- **Accuracy**: ~92% on test data
+- **Features**: Text length, punctuation, caps ratio, word count, source credibility
+- **Training Data**: Combination of reliable and unreliable news sources
+
 ## 🔧 Troubleshooting
 
 ### Common Issues
 
-1. **API Key Issues**:
+1. **Frontend Build Issues**:
    ```bash
-   # Check API key configuration
-   python -c "from utils.config import Config; print(Config().get('NEWS_API_KEY'))"
+   cd frontend
+   rm -rf node_modules package-lock.json
+   npm install
+   npm run build
    ```
 
-2. **Model Loading Issues**:
+2. **Backend Dependencies**:
    ```bash
-   # Verify model files exist
-   ls -la model_training/*.pkl
-   
-   # Check S3 access
-   python -c "from utils.aws_utils import S3Manager; print(S3Manager().is_available())"
+   pip install --upgrade pip
+   pip install -r backend/requirements.txt --upgrade
    ```
 
-3. **Memory Issues**:
+3. **Port Conflicts**:
    ```bash
-   # Reduce batch size
-   export BATCH_SIZE=25
-   
-   # Use smaller models
-   export MODEL_SIZE=small
+   # Check what's using port 3000 or 8000
+   lsof -i :3000
+   lsof -i :8000
    ```
-
-### Debug Mode
-
-```bash
-# Enable debug logging
-export LOG_LEVEL=DEBUG
-
-# Run with verbose output
-python -m lambda_function.lambda_handler --debug
-```
 
 ## 🤝 Contributing
 
@@ -358,20 +300,6 @@ python -m lambda_function.lambda_handler --debug
 3. Commit changes: `git commit -m 'Add amazing feature'`
 4. Push to branch: `git push origin feature/amazing-feature`
 5. Open a Pull Request
-
-### Development Setup
-
-```bash
-# Install development dependencies
-pip install -e .[dev]
-
-# Run code formatting
-black .
-flake8 .
-
-# Run tests
-pytest tests/ --cov=news_intelligence
-```
 
 ## 📈 Roadmap
 
@@ -394,14 +322,14 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [OpenRouter](https://openrouter.ai) for free AI models
 - [scikit-learn](https://scikit-learn.org) for ML algorithms
 - [AWS](https://aws.amazon.com) for cloud infrastructure
+- [React](https://reactjs.org) for frontend framework
 
 ## 📞 Support
 
-- 📧 Email: support@newsintelligence.com
-- 💬 Discord: [Join our community](https://discord.gg/news-intelligence)
-- 📚 Documentation: [Full docs](https://docs.newsintelligence.com)
-- 🐛 Issues: [GitHub Issues](https://github.com/your-org/news-intelligence-agent/issues)
+- 📧 Email: tejeshx37@gmail.com
+- 🐛 Issues: [GitHub Issues](https://github.com/tejeshx37/news-intelligence-agent/issues)
+- ⭐ Star this repository if you find it helpful!
 
 ---
 
-**⭐ Star this repository if you find it helpful!**
+**🚀 Ready to analyze news with AI intelligence!**
