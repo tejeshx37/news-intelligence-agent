@@ -4,6 +4,7 @@ import GalaxyBackground from './components/GalaxyBackground';
 import ChatContainer from './components/ChatContainer';
 
 function App() {
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || '';
   const [messages, setMessages] = useState([
     {
       text: "Welcome to the Galaxy News Intelligence Chatbot! 🌌 I can help you analyze news articles, detect fake news, and provide sentiment analysis. What would you like to explore?",
@@ -61,7 +62,7 @@ function App() {
         const title = lines[0] || 'User Provided Article';
         const content = lines.slice(1).join('\n').trim() || userMessage.text;
         
-        const response = await fetch('http://localhost:8000/api/process', {
+        const response = await fetch(`${API_BASE_URL}/api/process`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -102,7 +103,7 @@ ${article.summary || article.original_article?.description || article.original_a
         }
       } else if (isNewsQuery) {
         // Fetch and analyze news
-        const response = await fetch('http://localhost:8000/api/fetch-and-process', {
+        const response = await fetch(`${API_BASE_URL}/api/fetch-and-process`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
